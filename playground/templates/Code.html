@@ -1,0 +1,309 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Satisfaction Survey</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ECF0F1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background-color: #164F29;
+            color: white;
+            padding: 1rem;
+        }
+        
+        .header-logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid white;
+            margin-right: 1rem;
+        }
+
+        
+        .logo-blue {
+            background-color: #4a90a4;
+        }
+        
+        .logo-blue::after {
+            content: "🌍";
+            font-size: 24px;
+        }
+        
+        .header-title {
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-left: 70px;
+        }
+        
+        .header-subtitle {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.95;
+            margin-left: 70px;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 4rem 1rem;
+        }
+        
+        .code-entry-card {
+            background-color: #2d5a3d;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            width: 400px;
+            max-width: 90%;
+            margin-right: 180px;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .code-entry-card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .code-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .code-input {
+            width: 100%;
+            height: 60px;
+            background-color: #d5d5d5;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            padding: 0 1rem;
+            margin-bottom: 2rem;
+            box-sizing: border-box;
+        }
+        
+        .code-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(109, 179, 63, 0.3);
+        }
+        
+        .submit-button {
+            background-color: #6db33f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            height: 50px;
+            width: 150px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: background-color 0.3s ease;
+        }
+        
+        .submit-button:hover {
+            background-color: #5a9935;
+        }
+        
+        .page-footer {
+            background-color: #164F29;
+            height: 100px;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 1.5rem 1rem;
+            }
+            
+            .header-title {
+                font-size: 1.8rem;
+                letter-spacing: 1px;
+            }
+            
+            .header-subtitle {
+                font-size: 1rem;
+            }
+            
+            .header-logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-orange::after {
+                font-size: 28px;
+            }
+            
+            .logo-blue::after {
+                font-size: 20px;
+            }
+            
+            .main-content {
+                padding: 3rem 1rem;
+                justify-content: center;
+            }
+            
+            .code-entry-card {
+                width: 350px;
+                padding: 2rem;
+                margin-right: 0;
+            }
+            
+            .code-title {
+                font-size: 1.3rem;
+            }
+            
+            .code-input {
+                height: 55px;
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-header {
+                padding: 1rem;
+            }
+            
+            .header-title {
+                font-size: 1.4rem;
+                letter-spacing: 0.5px;
+            }
+            
+            .header-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .header-logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .logo-orange::after {
+                font-size: 24px;
+            }
+            
+            .logo-blue::after {
+                font-size: 18px;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+                justify-content: center;
+            }
+            
+            .code-entry-card {
+                width: 300px;
+                padding: 1.5rem;
+                margin-right: 0;
+            }
+            
+            .code-title {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .code-input {
+                height: 50px;
+                font-size: 15px;
+                margin-bottom: 1.5rem;
+            }
+            
+            .submit-button {
+                width: 130px;
+                height: 45px;
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .code-entry-card {
+                width: 280px;
+                padding: 1.25rem;
+                margin-right: 0;
+            }
+        }
+
+        .logs{
+            display: flex;
+            margin-left: 30px;
+        }
+
+        .client{
+            margin-left: -40px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container-fluid">
+            <div class="d-flex flex-md-row text-center text-md-start ">
+                <div class="d-flex gap-3 mb-3 mb-md-0">
+                    <div class="logs">
+                        <img class="logo" src="{% static 'pictures/csulogo.png' %}" alt="CSU Logo" style="width: 100px; ">
+                    </div>
+                </div>
+                <div class="client">
+                    <h1 class="header-title">CLIENT SATISFACTION MEASUREMENT SURVEY</h1>
+                    <p class="header-subtitle">HELP US SERVE YOU BETTER!</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="code-entry-card">
+            <h2 class="code-title">Please Enter The Code</h2>
+            <form method="POST" action="" id="codeForm" class="needs-validation" novalidate>
+                <input type="text" 
+                    class="code-input" 
+                    name="code" 
+                    id="code" 
+                    required 
+                    placeholder="ENTER YOUR CODE HERE:"
+                    style="background-color: white; 
+                            box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2), 
+                                        inset -5px -5px 5px rgba(255,255,255,0.7); 
+                            border: 1px solid #ccc; 
+                            padding: 8px; 
+                            border-radius: 6px;">
+
+                <div class="invalid-feedback d-block text-center text-white-50" id="errorMessage" style="display: none !important;">
+                    Please enter a valid code.
+                </div>
+                <button type="submit" class="submit-button">Submit</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Page Footer -->
+    <footer class="page-footer"></footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
