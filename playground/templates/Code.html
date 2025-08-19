@@ -277,27 +277,48 @@
 
     <!-- Main Content -->
     <main class="main-content">
+
         <div class="code-entry-card">
             <h2 class="code-title">Please Enter The Code</h2>
             <form method="POST" action="" id="codeForm" class="needs-validation" novalidate>
-                <input type="text" 
-                    class="code-input" 
-                    name="code" 
-                    id="code" 
-                    required 
-                    placeholder="ENTER YOUR CODE HERE:"
-                    style="background-color: white; 
-                            box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2), 
-                                        inset -5px -5px 5px rgba(255,255,255,0.7); 
-                            border: 1px solid #ccc; 
-                            padding: 8px; 
-                            border-radius: 6px;">
+            {% csrf_token %}
+            <input type="text" 
+                class="code-input" 
+                name="code" 
+                id="code" 
+                required 
+                placeholder="ENTER 4 DIGIT PIN:"
+                maxlength="4"
+                style="background-color: white; 
+                        box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2), 
+                                    inset -5px -5px 5px rgba(255,255,255,0.7); 
+                        border: 1px solid #ccc; 
+                        padding: 8px; 
+                        border-radius: 6px;
+                        text-align: center;
+                        font-size: 20px;
+                        ">
+            <button type="submit" class="submit-button">Submit</button><br>
+        </form>
 
-                <div class="invalid-feedback d-block text-center text-white-50" id="errorMessage" style="display: none !important;">
-                    Please enter a valid code.
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger fade show text-center mt-2" role="alert">
+                    {{ message }}
                 </div>
-                <button type="submit" class="submit-button">Submit</button>
-            </form>
+            {% endfor %}
+        {% endif %}
+
+        <script>
+            // Auto-dismiss alerts after 3 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.classList.remove('show'); // triggers fade out
+                    setTimeout(() => alert.remove(), 500); // remove from DOM after fade
+                });
+            }, 3000);
+        </script>
+
         </div>
     </main>
 

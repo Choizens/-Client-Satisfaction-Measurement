@@ -24,36 +24,18 @@
       padding: 1rem;
     }
 
-    .header-logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 4px solid white;
-      margin-right: 1rem;
-      background-color: #ff7f00;
-    }
-
-    .header-logo::after {
-      content: "★";
-      font-size: 28px;
-      color: white;
-    }
-
     .header-title {
       font-size: 30px;
       font-weight: bold;
       letter-spacing: 2px;
-      margin-left: 70px;
+      margin-left: 20px;
     }
 
     .header-subtitle {
       font-size: 1.1rem;
       font-style: italic;
       opacity: 0.95;
-      margin-left: 70px;
+      margin-left: 20px;
     }
 
     .main-content {
@@ -78,6 +60,19 @@
       font-weight: bold;
     }
 
+    .instructions-stars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+      font-weight: normal;
+    }
+
+    .instructions-stars .star-yellow {
+      color: #FFD700; /* Yellow stars */
+      font-size: 18px;
+    }
+
     .rating-table {
       width: 100%;
       border-collapse: collapse;
@@ -89,6 +84,7 @@
       border: 1px solid #ddd;
       padding: 0.75rem;
       text-align: center;
+      vertical-align: middle;
     }
 
     .rating-table th {
@@ -108,14 +104,21 @@
       font-weight: bold;
     }
 
-    .rating-star {
+    .stars {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .star {
       font-size: 28px;
       color: #ddd;
       cursor: pointer;
       transition: color 0.2s;
     }
 
-    .rating-star.selected {
+    .star.hover,
+    .star.selected {
       color: #ffd700;
     }
 
@@ -177,121 +180,125 @@
           </div>
       </div>
       <div>
-        <h1 class="header-title" style="margin-left: 20px;">CLIENT SATISFACTION MEASUREMENT SURVEY</h1>
-        <p class="header-subtitle" style="margin-left: 20px;">HELP US SERVE YOU BETTER!</p>
+        <h1 class="header-title">CLIENT SATISFACTION MEASUREMENT SURVEY</h1>
+        <p class="header-subtitle">HELP US SERVE YOU BETTER!</p>
       </div>
     </div>
   </header>
 
-    <main class="main-content"> 
-    <form method="POST" action="{% url 'page3' %}" id="surveyForm3">
-      {% csrf_token %}
-      <div class="survey-form"> 
+  <main class="main-content">
+    <div class="survey-form">
+      <form method="POST" action="{% url 'page3' %}">
+        {% csrf_token %}
+
         <div class="instructions">
-          <strong>INSTRUCTIONS:</strong><br> 
-          For SOD 0-8, please click the star (☆) on the column that best corresponds to your answer. 
-        </div> 
+          <strong>INSTRUCTIONS:</strong><br>
+          For SOD 0-8, please click the star (★) on the row that best corresponds to your answer.
+          
+          <div class="instructions-stars">
+            <div>Strongly Agree = <span class="star-yellow">★★★★★</span></div>
+            <div>Agree = <span class="star-yellow">★★★★</span></div>
+            <div>Neither Agree nor Disagree = <span class="star-yellow">★★★</span></div>
+            <div>Disagree = <span class="star-yellow">★★</span></div>
+            <div>Strongly Disagree = <span class="star-yellow">★</span></div>
+            <div>N/A Not Applicable = Leave it blank</div>
+          </div>
+        </div>
 
-        <!-- Rating Table --> 
-        <table class="rating-table"> 
-          <thead> 
-            <tr> 
-              <th>Service Quality Dimensions</th> 
-              <th>Strongly<br>Agree</th> 
-              <th>Agree</th> 
-              <th>Neither Agree<br>nor Disagree</th> 
-              <th>Disagree</th> 
-              <th>Strongly<br>Disagree</th> 
-              <th>N/A<br>Not<br>Applicable</th> 
-            </tr> 
-          </thead> 
-          <tbody id="questionsBody"></tbody> 
-        </table> 
+        <!-- Rating Table -->
+        <table class="rating-table">
+          <thead>
+            <tr>
+              <th>Service Quality Dimensions</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody id="questionsBody"></tbody>
+        </table>
 
-        <!-- Feedback --> 
-        <div class="feedback-section"> 
-          <label class="feedback-label">Suggestion on how we can further improve our services (optional):</label> 
-          <textarea class="feedback-textarea" name="feedback" id="feedbackText">{{ feedback }}</textarea> 
-        </div> 
+        <!-- Feedback -->
+        <div class="feedback-section">
+          <label class="feedback-label">Suggestion on how we can further improve our services (optional):</label>
+          <textarea class="feedback-textarea" id="feedbackText" name="feedback">{{ feedback }}</textarea>
+        </div>
 
-        <!-- Email --> 
-        <div class="email-section"> 
-          <label class="email-label">Email address (Optional):</label> 
-          <input type="email" class="email-input" name="email" id="emailInput" value="{{ email }}"> 
-        </div> 
+        <!-- Email -->
+        <div class="email-section">
+          <label class="email-label">Email address (Optional):</label>
+          <input type="email" class="email-input" id="emailInput" name="email" value="{{ email }}">
+        </div>
 
-        <!-- Buttons --> 
-        <div class="navigation-buttons"> 
-          <button type="submit" name="back" class="nav-button back-button">BACK</button> 
-          <button type="submit" class="nav-button next-button" id="nextButton">Done</button> 
-        </div> 
-      </div> 
-    </form>
-  </main> 
+        <!-- Buttons -->
+        <div class="navigation-buttons">
+          <button type="submit" name="back" class="nav-button back-button">BACK</button>
+          <button type="submit" class="nav-button next-button">Done</button>
+        </div>
+      </form>
+    </div>
+  </main>
 
-  <!-- Footer --> 
-  <footer class="page-footer"></footer> 
+  <footer class="page-footer"></footer>
 
-  <script> 
-  // Questions list 
-  const questions = [ 
-    { code: "SOD0.", text: "I am satisfied with service that I availed" }, 
-    { code: "SOD1.", text: "I spent a reasonable amount of time for my transaction." }, 
-    { code: "SOD2.", text: "The office followed the transaction's requirements and steps based on the information provided." }, 
-    { code: "SOD3.", text: "The steps (including payment) I needed to do for my transaction were easy and simple." }, 
-    { code: "SOD4.", text: "I easily found information about my transaction from the office or its website." }, 
-    { code: "SOD5.", text: "I paid a reasonable amount of fees for my transaction. (If service is free, mark N/A column)" }, 
-    { code: "SOD6.", text: "I feel the office was fair to everyone or 'walang palakasan' during my transaction." }, 
-    { code: "SOD7.", text: "I was treated courteously by the staff, and (if asked for help) the staff was helpful." }, 
-    { code: "SOD8.", text: "I got what I needed from the government office, or (if denied) denial of request was sufficiently explained to me." } 
-  ]; 
+  <script>
+    const questions = [
+      { code: "SOD0.", text: "I am satisfied with service that I availed" },
+      { code: "SOD1.", text: "I spent a reasonable amount of time for my transaction." },
+      { code: "SOD2.", text: "The office followed the transaction's requirements and steps based on the information provided." },
+      { code: "SOD3.", text: "The steps (including payment) I needed to do my transaction were easy and simple." },
+      { code: "SOD4.", text: "I easily found information about my transaction from the office or its website." },
+      { code: "SOD5.", text: "I paid a reasonable amount of fees for my transaction. (If service is free, mark N/A column)" },
+      { code: "SOD6.", text: "I feel the office was fair to everyone or 'walang palakasan' during my transaction." },
+      { code: "SOD7.", text: "I was treated courteously by the staff, and (if asked for help) the staff was helpful." },
+      { code: "SOD8.", text: "I got what I needed from the government office, or (if denied) denial of request was sufficiently explained to me." }
+    ];
 
-  // Create table rows for each question 
-  function loadQuestions() { 
-    const tbody = document.getElementById("questionsBody"); 
-    tbody.innerHTML = ""; 
-    questions.forEach((q, index) => { 
-      let row = `<tr> 
-        <td class="question-cell"><span class="question-code">${q.code}</span> ${q.text}</td>`; 
-      // 6 rating options 
-      for (let i = 1; i <= 6; i++) { 
-        row += `<td><span class="rating-star" data-q="${index}" data-rating="${i}">☆</span></td>`; 
-      } 
-      row += `</tr>`; 
-      tbody.innerHTML += row; 
+    function loadQuestions() {
+      const tbody = document.getElementById("questionsBody");
+      tbody.innerHTML = "";
+      questions.forEach((q, index) => {
+        let row = `<tr>
+          <td class="question-cell"><span class="question-code">${q.code}</span> ${q.text}</td>
+          <td>
+            <div class="stars" data-question="sod${index}">
+              ${[1,2,3,4,5].map(num => `<span class="star" data-value="${num}">&#9733;</span>`).join("")}
+              <input type="hidden" name="sod${index}" id="sod${index}">
+            </div>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
 
-      // hidden input for Django form
-      tbody.innerHTML += `<input type="hidden" name="sod${index}" id="sod${index}" value="6">`; // default N/A = 6
-    }); 
-  } 
+      setupStars();
+    }
 
-  // Handle star selection 
-  function handleStarClick(e) { 
-    if (!e.target.classList.contains("rating-star")) return; 
-    const qIndex = e.target.dataset.q; 
-    const rating = e.target.dataset.rating; 
+    function setupStars() {
+      document.querySelectorAll(".stars").forEach(starContainer => {
+        const stars = starContainer.querySelectorAll(".star");
+        const hiddenInput = starContainer.querySelector("input");
 
-    // Update hidden input
-    document.getElementById("sod" + qIndex).value = rating; 
+        stars.forEach((star, index) => {
+          star.addEventListener("mouseover", () => {
+            stars.forEach((s, i) => {
+              s.classList.toggle("hover", i <= index);
+            });
+          });
 
-    // Reset stars for this question 
-    document.querySelectorAll(`[data-q="${qIndex}"]`).forEach(star => { 
-      star.textContent = "☆"; 
-      star.classList.remove("selected"); 
-    }); 
+          star.addEventListener("mouseout", () => {
+            stars.forEach(s => s.classList.remove("hover"));
+          });
 
-    // Highlight selected star 
-    e.target.textContent = "★"; 
-    e.target.classList.add("selected"); 
-  } 
+          star.addEventListener("click", () => {
+            const value = star.getAttribute("data-value");
+            hiddenInput.value = value;
+            stars.forEach((s, i) => {
+              s.classList.toggle("selected", i < value);
+            });
+          });
+        });
+      });
+    }
 
-  // Initialize survey 
-  function initSurvey() { 
-    loadQuestions(); 
-    document.getElementById("questionsBody").addEventListener("click", handleStarClick); 
-  } 
-
-  document.addEventListener("DOMContentLoaded", initSurvey); 
+    document.addEventListener("DOMContentLoaded", loadQuestions);
   </script>
-  </body>
+</body>
 </html>
