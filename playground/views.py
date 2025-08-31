@@ -23,12 +23,19 @@ def page1(request):
         }
         return redirect("page2")
 
-    return render(request, "page1.html", request.session.get('page1', {}))
+    # always preload saved session data into template
+    return render(request, "page1.html", {"form_data": request.session.get('page1', {})})
 
 
 def page2(request):
     if request.method == "POST":
         if "back" in request.POST:
+            # save current answers before going back
+            request.session['page2'] = {
+                'cc1': request.POST.getlist("cc1"),
+                'cc2': request.POST.get("cc2"),
+                'cc3': request.POST.get("cc3"),
+            }
             return redirect("page1")
 
         # CC1 → allow up to 3 selections
@@ -36,7 +43,6 @@ def page2(request):
         if len(cc1_vals) > 3:
             cc1_vals = cc1_vals[:3]
 
-        # CC2 & CC3 → allow only one
         cc2_vals = request.POST.getlist("cc2")
         cc2_val = cc2_vals[0] if cc2_vals else None
 
@@ -52,15 +58,30 @@ def page2(request):
 
     return render(request, "page2.html", request.session.get('page2', {}))
 
+
 def page3(request):
     if request.method == "POST":
         if "back" in request.POST:
+            ratings = {}
+            for i in range(9):
+                # store 0 if blank
+                ratings[f"sod{i}"] = request.POST.get(f"sod{i}") or "0"
+
+            feedback = request.POST.get("feedback")
+            email = request.POST.get("email")
+
+            request.session['page3'] = {
+                **ratings,
+                "feedback": feedback,
+                "email": email,
+            }
             return redirect("page2")
 
-        # Collect ratings
+        # Collect ratings for submit
         ratings = {}
         for i in range(9):
-            ratings[f"sod{i}"] = int(request.POST.get(f"sod{i}", 6))  # default N/A=6
+            # if no selection, store 0
+            ratings[f"sod{i}"] = request.POST.get(f"sod{i}") or "0"
 
         feedback = request.POST.get("feedback")
         email = request.POST.get("email")
@@ -76,7 +97,7 @@ def page3(request):
         page2 = request.session.get("page2", {})
         page3 = request.session.get("page3", {})
 
-        survey = SatisfactionSurvey.objects.create(
+        SatisfactionSurvey.objects.create(
             clientType=page1.get("clientType"),
             government=page1.get("government"),
             visitDate=page1.get("visitDate"),
@@ -90,28 +111,28 @@ def page3(request):
             cc2=page2.get("cc2"),
             cc3=page2.get("cc3"),
 
-            sod0=page3.get("sod0"),
-            sod1=page3.get("sod1"),
-            sod2=page3.get("sod2"),
-            sod3=page3.get("sod3"),
-            sod4=page3.get("sod4"),
-            sod5=page3.get("sod5"),
-            sod6=page3.get("sod6"),
-            sod7=page3.get("sod7"),
-            sod8=page3.get("sod8"),
+            # ✅ Will always be number (0–5)
+            sod0=page3.get("sod0", "0"),
+            sod1=page3.get("sod1", "0"),
+            sod2=page3.get("sod2", "0"),
+            sod3=page3.get("sod3", "0"),
+            sod4=page3.get("sod4", "0"),
+            sod5=page3.get("sod5", "0"),
+            sod6=page3.get("sod6", "0"),
+            sod7=page3.get("sod7", "0"),
+            sod8=page3.get("sod8", "0"),
 
             feedback=page3.get("feedback"),
             email=page3.get("email"),
         )
 
-        # clear session for new user
+        # clear session
         for key in ['page1', 'page2', 'page3']:
             request.session.pop(key, None)
 
         return redirect("Code")
 
     return render(request, "page3.html", request.session.get('page3', {}))
-
 
 def dashboard(request):
     surveys = SatisfactionSurvey.objects.all()

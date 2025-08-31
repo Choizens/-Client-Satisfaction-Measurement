@@ -12,51 +12,22 @@
             margin: 0; 
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #ECF0F1;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+
+            /* Background image */
+            background: url("{% static 'pictures/Background.svg' %}") no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
         }
-        
-        /* Page Header */
-        .page-header {
-            background-color: #164F29;
-            color: white;
-            padding: 1rem;
-        }
-        
-        .header-logo {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 4px solid white;
-            margin-right: 1rem;
-        }
-        
-        .logo-orange {
-            background-color: #e67e22;
-        }
-        
-        .logo-orange::after {
-            content: "🏢";
-            font-size: 30px;
-        }
-        
-        .header-title {
-            font-size: 30px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-left: 70px;
-        }
-        
-        .header-subtitle {
-            font-size: 1.1rem;
-            font-style: italic;
-            opacity: 0.95;
-            margin-left: 70px;
+
+        /* Overlay effect */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;   
+            z-index: -1;
         }
         
         .main-content {
@@ -69,7 +40,7 @@
         
         .survey-container {
             background-color: white;
-            border-radius: 15px;
+            border-radius: 5px;
             padding: 3rem;
             max-width: 800px;
             width: 100%;
@@ -80,7 +51,7 @@
         .survey-instruction {
             background-color: #f8f9fa;
             padding: 1.5rem;
-            border-left: 4px solid #164F29;
+            border-left: 4px solid #10934F;
             margin-bottom: 2.5rem;
             font-size: 0.95rem;
             line-height: 1.5;
@@ -98,7 +69,7 @@
         
         .question-code {
             font-weight: bold;
-            color: #164F29;
+            color: #10934F;
             margin-bottom: 0.8rem;
             font-size: 1.1rem;
         }
@@ -118,14 +89,14 @@
             gap: 0.8rem;
             padding: 0.8rem;
             background-color: white;
-            border-radius: 8px;
+            border-radius: 5px;
             border: 1px solid #e9ecef;
             transition: all 0.2s ease;
         }
         
         .answer-option:hover {
             background-color: #f8f9fa;
-            border-color: #164F29;
+            border-color: #10934F;
         }
         
         .answer-option input[type="checkbox"] {
@@ -156,7 +127,6 @@
         .nav-button {
             padding: 15px 30px;
             border: none;
-            border-radius: 8px;
             font-weight: 600;
             font-size: 15px;
             cursor: pointer;
@@ -178,7 +148,7 @@
         }
         
         .next-button {
-            background-color: #164F29;
+            background-color: #10934F;
             color: white;
         }
         
@@ -189,37 +159,12 @@
         }
         
         .page-footer {
-            background-color: #164F29;
-            height: 100px;
+            background-color: #10934F;
+            height: 50px;
             margin-top: auto;
         }
 
         @media (max-width: 768px) {
-            .page-header {
-                padding: 1.5rem 1rem;
-            }
-            
-            .header-title {
-                font-size: 1.8rem;
-                letter-spacing: 1px;
-                margin-left: 0;
-                margin-top: 1rem;
-            }
-            
-            .header-subtitle {
-                font-size: 1rem;
-                margin-left: 0;
-            }
-            
-            .header-logo {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .logo-orange::after {
-                font-size: 24px;
-            }
-            
             .main-content {
                 padding: 1.5rem 1rem;
             }
@@ -246,27 +191,9 @@
     </style>
 </head>
 <body>
-    <!-- Page Header -->
-    <header class="page-header">
-        <div class="container-fluid">
-            <div class="d-flex align-items-center flex-column flex-md-row text-center text-md-start">
-                <div class="d-flex gap-3 mb-3 mb-md-0">
-                    <div class="logs">
-                        <img class="logo" src="{% static 'pictures/csulogo.png' %}" alt="CSU Logo" style="width: 80px; height: 80px;">
-                    </div>
-                </div>
-                <div class="flex-grow-1">
-                    <h1 class="header-title" data-editable="header-title" style="margin-left: 20px;">
-                        CLIENT SATISFACTION MEASUREMENT SURVEY
-                    </h1>
-                    <p class="header-subtitle" data-editable="header-subtitle" style="margin-left: 20px;">
-                        HELP US SERVE YOU BETTER!
-                    </p>
-                </div>
-            </div>
-        </div>
-    </header>
-
+    <div>
+        <img src="{% static 'pictures/header-logo.svg' %}" alt="Logo" class="h-16 m-4">
+    </div>
     <!-- Main Content -->
     <main class="main-content">
         <div class="survey-container">
