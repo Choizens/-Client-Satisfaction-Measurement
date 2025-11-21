@@ -2,12 +2,8 @@ from django.shortcuts import render, redirect
 from django.db.models import Avg
 from django.contrib import messages
 from .models import SatisfactionSurvey, Pin
-
-
-def code(request):
-    # landing page after submission
-    return render(request, "Code.html")
-
+from django.core.paginator import Paginator
+from django.db.models import Avg, Count, Q
 
 def page1(request):
     if request.method == "POST":
@@ -24,7 +20,7 @@ def page1(request):
         return redirect("page2")
 
     # always preload saved session data into template
-    return render(request, "page1.html", {"form_data": request.session.get('page1', {})})
+    return render(request, "Survey/page1.html", {"form_data": request.session.get('page1', {})})
 
 
 def page2(request):
@@ -56,7 +52,7 @@ def page2(request):
         }
         return redirect("page3")
 
-    return render(request, "page2.html", request.session.get('page2', {}))
+    return render(request, "Survey/page2.html", request.session.get('page2', {}))
 
 
 def page3(request):
@@ -132,22 +128,134 @@ def page3(request):
 
         return redirect("Code")
 
-    return render(request, "page3.html", request.session.get('page3', {}))
+    return render(request, "Survey/page3.html", request.session.get('page3', {}))
 
 def dashboard(request):
-    surveys = SatisfactionSurvey.objects.all()
-    total_surveys = surveys.count()
-    active_surveys = total_surveys  # you can adjust logic if some surveys are inactive
-    total_responses = surveys.count()
-    satisfaction_rate = surveys.aggregate(avg=Avg('sod4'))['avg'] or 0  # example: using sod4 as satisfaction
 
-    return render(request, "Dashboard.html", {
-        "surveys": surveys,
-        "total_surveys": total_surveys,
-        "active_surveys": active_surveys,
-        "total_responses": total_responses,
-        "satisfaction_rate": round(satisfaction_rate, 2),
-    })
+    surveys = SatisfactionSurvey.objects.all().order_by('-submitted_at')
+    
+
+    total_surveys = surveys.count()
+    total_responses = surveys.count()
+    
+
+    satisfaction_fields = ['sod0', 'sod1', 'sod2', 'sod3', 'sod4', 'sod5', 'sod6', 'sod7', 'sod8']
+    satisfaction_rate = 0
+    if surveys.exists():
+        total_ratings = 0
+        sum_ratings = 0
+        for survey in surveys:
+            for field in satisfaction_fields:
+                rating = getattr(survey, field)
+                if rating:
+                    total_ratings += 1
+                    sum_ratings += rating
+        if total_ratings > 0:
+            
+            avg_rating = sum_ratings / total_ratings
+            satisfaction_rate = ((avg_rating - 1) / 4) * 100 
+    
+    # Gender distribution
+    male_count = surveys.filter(sex__iexact='male').count()
+    female_count = surveys.filter(sex__iexact='female').count()
+    
+
+    strongly_agree = 0
+    agree = 0
+    neutral = 0
+    disagree = 0
+    strongly_disagree = 0
+    not_applicable = 0
+    
+    for survey in surveys:
+        for field in satisfaction_fields:
+            rating = getattr(survey, field)
+            if rating == 5:
+                strongly_agree += 1
+            elif rating == 4:
+                agree += 1
+            elif rating == 3:
+                neutral += 1
+            elif rating == 2:
+                disagree += 1
+            elif rating == 1:
+                strongly_disagree += 1
+            else:
+                not_applicable += 1
+    
+    # CC Analysis - Calculate distributions
+    cc1_counts = [0, 0, 0, 0] 
+    cc2_counts = [0, 0, 0, 0, 0]  
+    cc3_counts = [0, 0, 0, 0]  
+    
+    for survey in surveys:
+ 
+        if survey.cc1:
+            try:
+                selected_options = survey.cc1.split(',')
+                for option in selected_options:
+                    option_num = int(option.strip())
+                    if 1 <= option_num <= 4:
+                        cc1_counts[option_num-1] += 1
+            except (ValueError, AttributeError):
+                pass
+        
+
+        if survey.cc2:
+            try:
+                option_num = int(survey.cc2)
+                if 1 <= option_num <= 5:
+                    cc2_counts[option_num-1] += 1
+            except (ValueError, AttributeError):
+                pass
+        
+
+        if survey.cc3:
+            try:
+                option_num = int(survey.cc3)
+                if 1 <= option_num <= 4:
+                    cc3_counts[option_num-1] += 1
+            except (ValueError, AttributeError):
+                pass
+    
+
+    paginator = Paginator(surveys, 10) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'surveys': surveys,
+        'page_obj': page_obj,
+        'total_surveys': total_surveys,
+        'total_responses': total_responses,
+        'satisfaction_rate': round(satisfaction_rate, 1),
+        'male_count': male_count,
+        'female_count': female_count,
+        'strongly_agree': strongly_agree,
+        'agree': agree,
+        'neutral': neutral,
+        'disagree': disagree,
+        'strongly_disagree': strongly_disagree,
+        'not_applicable': not_applicable,
+        # CC Analysis data
+        'cc1_option1': cc1_counts[0],
+        'cc1_option2': cc1_counts[1], 
+        'cc1_option3': cc1_counts[2],
+        'cc1_option4': cc1_counts[3],
+        'cc2_option1': cc2_counts[0],
+        'cc2_option2': cc2_counts[1],
+        'cc2_option3': cc2_counts[2], 
+        'cc2_option4': cc2_counts[3],
+        'cc2_option5': cc2_counts[4],
+        'cc3_option1': cc3_counts[0],
+        'cc3_option2': cc3_counts[1],
+        'cc3_option3': cc3_counts[2],
+        'cc3_option4': cc3_counts[3]
+    }
+    
+    return render(request, 'Survey/Dashboard.html', context)
+
+
 
 def code(request):
     if request.method == "POST":
@@ -159,4 +267,6 @@ def code(request):
             messages.error(request, "PIN does not exist.")
             return redirect("Code") 
 
-    return render(request, "Code.html") 
+    return render(request, "Survey/Code.html") 
+
+
